@@ -4,6 +4,8 @@ conf();
 const _config = {
   port: process.env.PORT,
   databaseUrl : process.env.MONGO_CONNECTION_STRING,
+  env:process.env.NODE_ENV,
+  // SPECIAL ENV VARIABLES IS USED TO IDENTIFY WHICH ENV IT IS DEV OR PRODUCTION
 };
 
 export const config = Object.freeze(_config);
