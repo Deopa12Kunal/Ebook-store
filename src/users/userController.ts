@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import userModel from "./userModel";
 import bcrypt from "bcrypt";
+import { sign } from "jsonwebtoken";
+// import { config  } from "dotenv";
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
   //  console.log("reqdata",req.body);
   //  return res.json({});
@@ -19,10 +21,29 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   }
   //Todo: Hasing password using a library bcrypt
   const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = await userModel.create({
+    name,
+    email,
+    password: hashedPassword,
+  });
+  // TODO : TOKEN GENERATION JWT TOKEN USING A LIBRARY jsonwebtoken
+  // const token = sign({sub:newUser._id}, config.jwtSecret as string ,{expiresIn: "7d"});
+   const jwtSecret = process.env.JWT_SECRET;
+   if (!jwtSecret) {
+     const error = createHttpError(500, "JWT secret not defined");
+     return next(error);
+   }
 
+   const token = sign({ sub: newUser._id }, jwtSecret, 
+    { 
+      expiresIn: "7d",
+    
+    });
+    
+  
   //    return res.json({ message: "All fields must be filled." });
   //process
   //resonse
-  res.json({ message: "User Created" });
+  res.json({ accessToken: token });
 };
 export { createUser };
