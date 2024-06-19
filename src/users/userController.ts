@@ -56,4 +56,34 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return next(createHttpError(400, "All fields are required"));
+  }
+
+  try {
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return next(createHttpError(404, "User not found"));
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return next(createHttpError(400, "Invalid password or username"));
+    }
+
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      return next(createHttpError(500, "JWT secret not defined"));
+    }
+
+    const token = sign({ sub: user._id }, jwtSecret, { expiresIn: "7d" });
+    res.json({ accessToken: token });
+  } catch (err) {
+    return next(createHttpError(500, "Error while logging user in"));
+  }
+};
+
 export { createUser, loginUser };
