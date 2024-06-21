@@ -6,6 +6,7 @@ const bookRouter = express.Router();
 
 const upload =multer({
 dest:path.resolve(__dirname,'../../public/data/uploads'),
+//todo put limit as 10MB for user
 limits:{fieldSize: 3e7} // defines the size that is 30 mb
 })
 // routes
