@@ -170,4 +170,18 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
   );
   res.json(updatedBook);
 };
-export { createBook, updateBook };
+ const listBooks = async (req: Request, res: Response, next: NextFunction) => {
+   try{
+    // this find will return all the records present in database, production sysstem we 
+    // will not use this ,(  we will use pagination)
+
+ const book = await bookModel.find();
+
+      res.json({book});
+
+
+   }catch(err){
+return next(createHttpError(500,"error while creating a book"));
+   }
+ };
+export { createBook, updateBook, listBooks };
