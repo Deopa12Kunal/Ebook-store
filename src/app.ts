@@ -11,9 +11,8 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-  origin: config.frontendDomain,
-  
-})
+    origin: config.frontendDomain,
+  })
 );
 // routes
 //  app.use(express.json());
@@ -24,7 +23,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to ebook api" });
 });
 app.use("/api/users", userRouter);
-app.use('/api/books',bookRouter)
+app.use("/api/books", bookRouter);
 // global error handler
 // should be at last of all routes
 app.use(globalErrorHandler);
